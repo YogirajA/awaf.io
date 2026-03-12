@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWAF — Agent Well-Architected Framework</title>
+  <meta name="description" content="An open specification for production-ready AI agent architecture. 10 pillars, scored 0–100, with readiness ratings." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            canvas:        '#0d1117',
+            surface:       '#161b22',
+            surface2:      '#1c2128',
+            border:        '#30363d',
+            'border-subtle': '#21262d',
+            'text-primary':   '#f0f6fc',
+            'text-secondary': '#8b949e',
+            'text-tertiary':  '#484f58',
+            accent:        '#2dd4bf',
+            'accent-dim':  '#0f766e',
+            amber:         '#f59e0b',
+          },
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+            mono:    ['JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background-color: #0d1117;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: #f0f6fc;
+    }
+
+    /* Subtle grid texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(48, 54, 61, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(48, 54, 61, 0.18) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav, section, footer { position: relative; z-index: 1; }
+
+    /* Typography */
+    .wordmark {
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.18em;
+      font-weight: 500;
+    }
+    .headline {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Cards */
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+    .card:hover {
+      border-color: rgba(45, 212, 191, 0.5);
+      background: #191f27;
+    }
+    .card-amber {
+      background: #161b22;
+      border: 1px solid rgba(245, 158, 11, 0.22);
+      border-radius: 8px;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+    .card-amber:hover {
+      border-color: rgba(245, 158, 11, 0.55);
+      background: #1a1c15;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-block;
+      padding: 10px 22px;
+      background: #2dd4bf;
+      color: #0d1117;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #5eead4; }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 10px 22px;
+      background: transparent;
+      color: #f0f6fc;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.875rem;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn-outline:hover {
+      border-color: #2dd4bf;
+      background: rgba(45, 212, 191, 0.06);
+    }
+
+    /* pip install snippet */
+    .pip-snippet {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      color: #8b949e;
+      user-select: none;
+    }
+    .pip-snippet:hover { border-color: #484f58; }
+    .pip-snippet .copy-icon { color: #484f58; flex-shrink: 0; }
+    .pip-snippet .copied-text { color: #2dd4bf; font-size: 0.75rem; display: none; }
+
+    /* Ecosystem cards */
+    .eco-card {
+      display: block;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 20px;
+      text-decoration: none;
+      transition: border-color 0.18s, background 0.18s, transform 0.18s;
+    }
+    .eco-card:hover {
+      border-color: rgba(45, 212, 191, 0.5);
+      background: #191f27;
+      transform: translateY(-2px);
+    }
+
+    /* Tier badge */
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* Radial hero glow */
+    .hero-glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 560px;
+      background: radial-gradient(ellipse at center, rgba(45, 212, 191, 0.065) 0%, transparent 62%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Fade-up entry */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+    .fu { opacity: 0; animation: fadeUp 0.55s ease forwards; }
+    .fu-1 { animation-delay: 0.08s; }
+    .fu-2 { animation-delay: 0.2s;  }
+    .fu-3 { animation-delay: 0.34s; }
+    .fu-4 { animation-delay: 0.46s; }
+
+    /* Dot separator */
+    .dot-sep { color: #30363d; }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <!-- ─── NAV ─── -->
+  <nav class="sticky top-0 z-50 border-b border-border-subtle backdrop-blur-md" style="background: rgba(13,17,23,0.85);">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <span class="wordmark text-text-primary text-base">awaf</span>
+      <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener"
+         class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors text-sm">
+        <svg viewBox="0 0 16 16" class="w-4 h-4 fill-current" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                   0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                   -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                   .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                   -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0
+                   1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+                   1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+                   1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="relative pt-28 pb-24 overflow-hidden">
+    <div class="hero-glow"></div>
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+
+      <div class="fu fu-1 mb-5">
+        <span class="inline-flex items-center gap-2 text-xs text-text-secondary border border-border rounded-full px-3 py-1 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span>
+          AWAF v1.0 &nbsp;·&nbsp; Open Specification
+        </span>
+      </div>
+
+      <h1 class="headline text-5xl md:text-[4.5rem] text-text-primary mb-6 fu fu-2">
+        Production-ready<br/>AI agents.<br/>
+        <span style="color: #2dd4bf;">Measurably.</span>
+      </h1>
+
+      <p class="text-text-secondary text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed fu fu-3">
+        AWAF is an open framework for evaluating AI agent architecture across 10 pillars.
+        Score your agent. Find the gaps. Ship with confidence.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fu fu-4">
+        <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener" class="btn-primary">
+          Read the Spec
+        </a>
+        <div class="pip-snippet" onclick="copyPip(this)" title="Click to copy">
+          <span>pip install awaf</span>
+          <span class="copy-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </span>
+          <span class="copied-text">Copied!</span>
+        </div>
+      </div>
+
+      <!-- Readiness scale -->
+      <div class="mt-16 flex flex-wrap justify-center items-center gap-2 text-xs font-mono fu fu-4" style="animation-delay: 0.56s; opacity: 0;">
+        <span class="text-text-tertiary">0</span>
+        <span class="badge border border-red-900/50 text-red-400"     style="background: rgba(153,27,27,0.15);">Not Ready</span>
+        <span class="badge border border-orange-900/50 text-orange-400" style="background: rgba(154,52,18,0.15);">High Risk</span>
+        <span class="badge border border-yellow-800/50 text-yellow-400" style="background: rgba(120,80,0,0.18);">Needs Work</span>
+        <span class="badge border border-sky-800/50 text-sky-400"      style="background: rgba(7,89,133,0.18);">Near Ready</span>
+        <span class="badge border border-emerald-800/50 text-emerald-400" style="background: rgba(6,78,59,0.18);">Production Ready</span>
+        <span class="text-text-tertiary">100</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PILLARS ─── -->
+  <section class="py-20 border-t border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <div class="mb-14 text-center">
+        <h2 class="headline text-3xl md:text-4xl text-text-primary mb-3" style="font-size: clamp(1.75rem, 4vw, 2.5rem);">
+          10 Pillars. 3 Tiers.
+        </h2>
+        <p class="text-text-secondary max-w-xl mx-auto">
+          A complete architectural model for agent systems, from foundational requirements to
+          agent-native concerns that have no cloud equivalent.
+        </p>
+      </div>
+
+      <!-- TIER 0 -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="section-label text-text-tertiary">Tier 0</span>
+          <span class="text-text-tertiary text-xs">Foundation</span>
+          <div class="flex-1 h-px bg-border-subtle"></div>
+          <span class="badge border border-border text-text-tertiary" style="background: rgba(48,54,61,0.3);">Prerequisite</span>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-text-tertiary shrink-0"></div>
+                <h3 class="font-display font-bold text-text-primary" style="font-family: Syne, sans-serif;">Foundation</h3>
+              </div>
+              <p class="text-text-secondary text-sm leading-relaxed max-w-2xl">
+                Agents must own their domain end-to-end with independent tools, context, and data.
+                A vertically sliced agent owns its domain: its tools, its context, its data.
+              </p>
+            </div>
+            <div class="shrink-0 text-right sm:text-right">
+              <div class="font-mono text-xs text-text-tertiary">0 – 100</div>
+              <div class="font-mono text-xs text-red-400 mt-0.5">FAIL &lt; 40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 1 -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="section-label text-text-tertiary">Tier 1</span>
+          <span class="text-text-tertiary text-xs">Cloud WAF Adapted</span>
+          <div class="flex-1 h-px bg-border-subtle"></div>
+          <span class="badge border text-accent" style="border-color: rgba(45,212,191,0.4); background: rgba(45,212,191,0.07);">1.0×</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Operational Excellence</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              SLOs, playbooks, and postmortems. Determines whether the other pillars remain effective in production.
+            </p>
+          </div>
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Security</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Enforced in code, not prompts. Credentials must never enter the agent. Blast radius must be explicitly bounded.
+            </p>
+          </div>
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Reliability</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Designed for failure, not just uptime. Fail-loud behavior and circuit breakers at the MCP layer.
+            </p>
+          </div>
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Performance Efficiency</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Optimizes execution speed and resource usage across agent operations.
+            </p>
+          </div>
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Cost Optimization</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Tracks every token and tool call. Hard stop at 100% budget. Non-negotiable.
+            </p>
+          </div>
+
+          <div class="card p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Sustainability</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Long-term viability and environmental considerations adapted from cloud WAF principles.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TIER 2 -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="section-label text-text-tertiary">Tier 2</span>
+          <span class="text-text-tertiary text-xs">Agent-Native</span>
+          <div class="flex-1 h-px bg-border-subtle"></div>
+          <span class="text-text-tertiary text-xs hidden sm:inline">No cloud equivalent</span>
+          <span class="badge border" style="border-color: rgba(245,158,11,0.45); color: #f59e0b; background: rgba(245,158,11,0.08);">1.5×</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div class="card-amber p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Reasoning Integrity</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Addresses silent, confident failures. Requires evals covering tool selection, argument accuracy, and chain-of-thought faithfulness.
+            </p>
+          </div>
+
+          <div class="card-amber p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Controllability</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Human control through code-level enforcement, not prompts. Any in-flight agent must be externally stoppable.
+            </p>
+          </div>
+
+          <div class="card-amber p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Context Integrity</h3>
+            </div>
+            <p class="text-text-secondary text-sm leading-relaxed">
+              Prevents stale context from corrupting reasoning. The agent must understand its own knowledge limitations.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── ECOSYSTEM ─── -->
+  <section class="py-20 border-t border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <div class="mb-12 text-center">
+        <h2 class="headline text-3xl md:text-4xl text-text-primary mb-3" style="font-size: clamp(1.75rem, 4vw, 2.5rem);">
+          The Ecosystem
+        </h2>
+        <p class="text-text-secondary">Spec-first. Multiple implementations. Community-owned.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener" class="eco-card">
+          <div class="section-label text-text-tertiary mb-3">Specification</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">AWAF Spec</div>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            The canonical spec. FRAMEWORK.md defines all 10 pillars, scoring, and readiness ratings.
+          </p>
+          <div class="mt-4 flex items-center gap-1 text-xs text-accent">
+            <span>YogirajA/awaf</span>
+            <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 13L13 3M13 3H7M13 3V9"/>
+            </svg>
+          </div>
+        </a>
+
+        <a href="https://github.com/YogirajA/awaf-cli" target="_blank" rel="noopener" class="eco-card">
+          <div class="section-label text-text-tertiary mb-3">CLI</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">awaf-cli</div>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Reference implementation. Static analysis, CI/CD integration, GitHub Action. pip install awaf.
+          </p>
+          <div class="mt-4 flex items-center gap-1 text-xs text-accent">
+            <span>YogirajA/awaf-cli</span>
+            <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 13L13 3M13 3H7M13 3V9"/>
+            </svg>
+          </div>
+        </a>
+
+        <a href="https://github.com/YogirajA/awaf-skill" target="_blank" rel="noopener" class="eco-card">
+          <div class="section-label text-text-tertiary mb-3">Claude Code Skill</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">AWAF Skill</div>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Dialogue-driven assessments in Claude Code. Accepts code, docs, exports, or verbal descriptions.
+          </p>
+          <div class="mt-4 flex items-center gap-1 text-xs text-accent">
+            <span>YogirajA/awaf-skill</span>
+            <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 13L13 3M13 3H7M13 3V9"/>
+            </svg>
+          </div>
+        </a>
+
+        <a href="https://github.com/YogirajA/glitched-ui" target="_blank" rel="noopener" class="eco-card">
+          <div class="section-label text-text-tertiary mb-3">Integration</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">glitched-ui</div>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Third-party integration using AWAF as an architectural backstop.
+          </p>
+          <div class="mt-4 flex items-center gap-1 text-xs text-accent">
+            <span>YogirajA/glitched-ui</span>
+            <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 13L13 3M13 3H7M13 3V9"/>
+            </svg>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTRIBUTING CTA ─── -->
+  <section class="py-24 border-t border-border-subtle">
+    <div class="max-w-xl mx-auto px-6 text-center">
+      <h2 class="headline text-3xl md:text-4xl text-text-primary mb-4" style="font-size: clamp(1.75rem, 4vw, 2.25rem);">
+        AWAF is community-owned.
+      </h2>
+      <p class="text-text-secondary text-lg mb-2">The spec is open. Implementations are open.</p>
+      <p class="text-text-secondary mb-10">If you build agents in production, your patterns belong here.</p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener" class="btn-primary">
+          Contribute to the Spec
+        </a>
+        <a href="https://github.com/YogirajA/awaf/discussions" target="_blank" rel="noopener" class="btn-outline">
+          Join the Discussion
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="border-t border-border-subtle py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span class="wordmark text-text-tertiary text-sm">awaf</span>
+      <p class="font-mono text-xs text-text-tertiary">
+        awaf v1.0
+        <span class="dot-sep mx-2">·</span>
+        Apache 2.0
+        <span class="dot-sep mx-2">·</span>
+        <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener"
+           class="hover:text-text-secondary transition-colors">github.com/YogirajA/awaf</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function copyPip(el) {
+      navigator.clipboard.writeText('pip install awaf').then(function () {
+        var icon   = el.querySelector('.copy-icon');
+        var copied = el.querySelector('.copied-text');
+        icon.style.display   = 'none';
+        copied.style.display = 'inline';
+        setTimeout(function () {
+          icon.style.display   = '';
+          copied.style.display = 'none';
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
