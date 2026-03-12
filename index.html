@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AWAF — Agent Well-Architected Framework</title>
   <meta name="description" content="An open specification for production-ready AI agent architecture. 10 pillars, scored 0–100, with readiness ratings." />
+  <link rel="canonical" href="https://awaf.ai" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,8 +32,8 @@
             amber:         '#f59e0b',
           },
           fontFamily: {
-            display: ['Syne', 'sans-serif'],
-            body:    ['DM Sans', 'sans-serif'],
+            display: ['Geist', 'sans-serif'],
+            body:    ['Geist', 'sans-serif'],
             mono:    ['JetBrains Mono', 'monospace'],
           },
         }
@@ -45,7 +46,7 @@
 
     body {
       background-color: #0d1117;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Geist', sans-serif;
       -webkit-font-smoothing: antialiased;
       color: #f0f6fc;
     }
@@ -112,7 +113,7 @@
       padding: 10px 22px;
       background: #2dd4bf;
       color: #0d1117;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Geist', sans-serif;
       font-weight: 600;
       font-size: 0.875rem;
       border-radius: 6px;
@@ -126,7 +127,7 @@
       padding: 10px 22px;
       background: transparent;
       color: #f0f6fc;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Geist', sans-serif;
       font-weight: 500;
       font-size: 0.875rem;
       border: 1px solid #30363d;
@@ -317,7 +318,7 @@
             <div>
               <div class="flex items-center gap-2 mb-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-text-tertiary shrink-0"></div>
-                <h3 class="font-display font-bold text-text-primary" style="font-family: Syne, sans-serif;">Foundation</h3>
+                <h3 class="font-display font-bold text-text-primary" style="font-family: Geist, sans-serif;">Foundation</h3>
               </div>
               <p class="text-text-secondary text-sm leading-relaxed max-w-2xl">
                 Agents must own their domain end-to-end with independent tools, context, and data.
@@ -346,7 +347,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Operational Excellence</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Operational Excellence</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               SLOs, playbooks, and postmortems. Determines whether the other pillars remain effective in production.
@@ -356,7 +357,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Security</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Security</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Enforced in code, not prompts. Credentials must never enter the agent. Blast radius must be explicitly bounded.
@@ -366,7 +367,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Reliability</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Reliability</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Designed for failure, not just uptime. Fail-loud behavior and circuit breakers at the MCP layer.
@@ -376,7 +377,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Performance Efficiency</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Performance Efficiency</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Optimizes execution speed and resource usage across agent operations.
@@ -386,7 +387,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Cost Optimization</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Cost Optimization</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Tracks every token and tool call. Hard stop at 100% budget. Non-negotiable.
@@ -396,7 +397,7 @@
           <div class="card p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Sustainability</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Sustainability</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Long-term viability and environmental considerations adapted from cloud WAF principles.
@@ -421,7 +422,7 @@
           <div class="card-amber p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Reasoning Integrity</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Reasoning Integrity</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Addresses silent, confident failures. Requires evals covering tool selection, argument accuracy, and chain-of-thought faithfulness.
@@ -431,7 +432,7 @@
           <div class="card-amber p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Controllability</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Controllability</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Human control through code-level enforcement, not prompts. Any in-flight agent must be externally stoppable.
@@ -441,7 +442,7 @@
           <div class="card-amber p-5">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-1.5 h-1.5 rounded-full shrink-0" style="background: #f59e0b;"></div>
-              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Syne, sans-serif;">Context Integrity</h3>
+              <h3 class="text-text-primary text-sm font-semibold" style="font-family: Geist, sans-serif;">Context Integrity</h3>
             </div>
             <p class="text-text-secondary text-sm leading-relaxed">
               Prevents stale context from corrupting reasoning. The agent must understand its own knowledge limitations.
@@ -469,7 +470,7 @@
 
         <a href="https://github.com/YogirajA/awaf" target="_blank" rel="noopener" class="eco-card">
           <div class="section-label text-text-tertiary mb-3">Specification</div>
-          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">AWAF Spec</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Geist, sans-serif;">AWAF Spec</div>
           <p class="text-text-secondary text-sm leading-relaxed">
             The canonical spec. FRAMEWORK.md defines all 10 pillars, scoring, and readiness ratings.
           </p>
@@ -483,7 +484,7 @@
 
         <a href="https://github.com/YogirajA/awaf-cli" target="_blank" rel="noopener" class="eco-card">
           <div class="section-label text-text-tertiary mb-3">CLI</div>
-          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">awaf-cli</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Geist, sans-serif;">awaf-cli</div>
           <p class="text-text-secondary text-sm leading-relaxed">
             Reference implementation. Static analysis, CI/CD integration, GitHub Action. pip install awaf.
           </p>
@@ -497,7 +498,7 @@
 
         <a href="https://github.com/YogirajA/awaf-skill" target="_blank" rel="noopener" class="eco-card">
           <div class="section-label text-text-tertiary mb-3">Claude Code Skill</div>
-          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">AWAF Skill</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Geist, sans-serif;">AWAF Skill</div>
           <p class="text-text-secondary text-sm leading-relaxed">
             Dialogue-driven assessments in Claude Code. Accepts code, docs, exports, or verbal descriptions.
           </p>
@@ -511,7 +512,7 @@
 
         <a href="https://github.com/YogirajA/glitched-ui" target="_blank" rel="noopener" class="eco-card">
           <div class="section-label text-text-tertiary mb-3">Integration</div>
-          <div class="text-text-primary font-bold mb-2" style="font-family: Syne, sans-serif;">glitched-ui</div>
+          <div class="text-text-primary font-bold mb-2" style="font-family: Geist, sans-serif;">glitched-ui</div>
           <p class="text-text-secondary text-sm leading-relaxed">
             Third-party integration using AWAF as an architectural backstop.
           </p>
